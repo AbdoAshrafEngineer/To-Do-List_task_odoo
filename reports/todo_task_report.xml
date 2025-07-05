@@ -1,0 +1,109 @@
+<odoo>
+    <record id="property_report" model="ir.actions.report">
+        <field name="name">Todo task Report</field>
+        <field name="model">todo.task</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_todo_task"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">todo_management.todo_task_report_template</field>
+    </record>
+
+    <template id="todo_task_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="rec">
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 10mm; /* Reduced margins to fill more space */
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                            font-size: 14px;
+                        }
+                        .container {
+                            width: 100%;
+                            max-width: 210mm;
+                            padding: 15px;
+                            margin: 0 auto;
+                        }
+                        .header, .footer {
+                            text-align: center;
+                            margin-bottom: 20px;
+                            font-size: 14px;
+                        }
+                        .task-section, .timesheet {
+                            margin-bottom: 20px;
+                        }
+                        .task-section div, .timesheet div {
+                            margin: 8px 0;
+                            line-height: 1.5; /* Increased line spacing for more content */
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 14px;
+                        }
+                        th, td {
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f9f9f9;
+                        }
+                        strong {
+                            font-size: 14px;
+                        }
+                        .task-section div {
+                            font-size: 15px; /* Slightly larger text for task section */
+                        }
+                        .timesheet table {
+                            width: 100%;
+                            margin-top: 10px;
+                        }
+                        @media print {
+                            table { page-break-inside: auto; }
+                            tr    { page-break-inside: avoid; page-break-after: auto; }
+                        }
+                    </style>
+                    <div class="container">
+                        <div class="task-section">
+                            <div><strong>TASK:</strong> <span t-field="rec.task_name"/></div>
+                            <div><strong>Due Date: </strong> <span t-field="rec.due_date"/></div>
+                            <div><strong>Assign To: </strong> <span t-field="rec.user_id"/></div>
+                            <div><strong>Estimated Time: </strong> <span t-field="rec.estimated_time"/></div>
+                            <br/>
+                            <div style="font-weight: bold; font-size:18px;">Description:</div>
+                            <div> <span t-field="rec.desc"/></div>
+                        </div>
+                        <div class="timesheet">
+                            <strong>Timesheet</strong>
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>time</th>
+                                </tr>
+                                <t t-foreach="rec.line_ids" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.id"/></td>
+                                        <td><span t-field="line.date"/></td>
+                                        <td><span t-field="line.description"/></td>
+                                        <td><span t-field="line.hours"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td></td>
+                                    <td><strong>Total Time</strong></td>
+                                    <td></td>
+                                    <td><strong><span t-field="rec.total_hours"/></strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
